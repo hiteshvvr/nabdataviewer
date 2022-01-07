@@ -61,9 +61,10 @@ class MyTabWidget(QWidget):
         # self.alayout.addWidget(self.l)
         # self.tab1.setLayout(self.tab1.layout)
         self.button_fname = QPushButton('Select File')
-        self.fname = "/Users/seeker/daq60hz/nabdataviewer/firsttry/run-15976data-21"
+        self.fname = "/Users/seeker/daq60hz/tdata/run-15982data-21"
         self.button_fname.clicked.connect(self.dialog)
         self.field_fname = QLineEdit(self.fname)
+        self.field_fname.textChanged.connect(self.updatefname)
         self.data = None
         self.button_load = QPushButton('LoadData')
         self.button_load.clicked.connect(self.loaddata)
@@ -77,12 +78,25 @@ class MyTabWidget(QWidget):
 
         self.evtno = 42
         self.lims = [2,10]
+        self.totevnt = 00
+        self.totarea = 00
+        self.tbinwidth = 320e-6
 
         self.button_freerun = QPushButton('FreeRun')
         self.button_freerun.setCheckable(True)
-        self.label_evntno = QLabel("Event")
-        self.label_evntno.setFixedWidth(60)
+        self.label_evtno = QLabel("Event")
+        # self.label_evtno.setFixedWidth(60)
         self.value_evtno = QLineEdit(str(self.evtno))
+
+        self.label_totevt = QLabel("Total. Event")
+        # self.label_totevt.setFixedWidth(60)
+        self.value_totevt = QLineEdit(str(self.totevnt))
+
+        self.label_totarea = QLabel("Area")
+        # self.label_totarea.setFixedWidth(60)
+        self.value_totarea = QLineEdit(str(self.totarea))
+
+
         self.value_evtno.textChanged.connect(self.updateevent)
         self.label_lims= QLabel("Range")
         self.value_lims= QLineEdit(str(self.lims)[1:-1])
@@ -97,10 +111,15 @@ class MyTabWidget(QWidget):
         self.inlayout.addWidget(self.sel_channo)
         
         self.in2layout.addWidget(self.button_freerun)
-        self.in2layout.addWidget(self.label_evntno)
+        self.in2layout.addWidget(self.label_evtno)
         self.in2layout.addWidget(self.value_evtno)
         self.in2layout.addWidget(self.label_lims)
         self.in2layout.addWidget(self.value_lims)
+
+        self.in2layout.addWidget(self.label_totevt)
+        self.in2layout.addWidget(self.value_totevt)
+        self.in2layout.addWidget(self.label_totarea)
+        self.in2layout.addWidget(self.value_totarea)
 
 
 
@@ -225,13 +244,16 @@ class MyTabWidget(QWidget):
         """
         Get the data in the form of array of 48x40 (2d array)(48 channel column, and 40 rows which are samples)
         """
-        tdata = np.core.records.fromfile(self.fname, formats='(48)I,(40,48)I',names='header,data')
+        tdata = np.core.records.fromfile(self.fname, formats='(48)int32,(40,48)int32',names='header,data')
         tdata = tdata['data']
         tdata = tdata.transpose(0,2,1)
         tdata = tdata//(2**8)
         tdata = 20*tdata/(2**24)
         self.data = tdata
         self.updateall()
+        len(self.data)
+        self.value_totevt.setText(str(len(self.data)))
+        self.getarea()
         # self.updatexy()
         # self.updaterangeplot()
         # self.updatenoisehistogram()
@@ -251,6 +273,7 @@ class MyTabWidget(QWidget):
             tevtdata = self.data[self.evtno]
             tchndata = tevtdata[self.chan]
             self.x = np.arange(len(tchndata))
+            self.x = self.x*self.tbinwidth
             self.y = tchndata
             self.p1.setData(x=self.x, y = self.y)
 
@@ -270,6 +293,9 @@ class MyTabWidget(QWidget):
         self.hy,self.hx = counts,edges
         self.p2.setData(self.hx, self.hy)
 
+    def updatefname(self):
+        self.fname = self.field_fname.text()
+
     def getlims(self):
         templims = self.value_lims.text().split(sep=",")
         if(len(templims) == 2):
@@ -285,7 +311,14 @@ class MyTabWidget(QWidget):
         print(self.lims)
         self.sy = self.data[self.lims[0]:self.lims[1],self.chan].flatten()
         self.sx = np.tile(np.arange(0,len(self.data[0,self.chan])),len(self.data[self.lims[0]:self.lims[1],self.chan]))
+        self.sx = self.sx*self.tbinwidth
         self.p4.setData(x = self.sx, y = self.sy)
+
+    def getarea(self):
+        if self.data is not None:
+            talldata = self.data[0:len(self.data)-1,self.chan].flatten()
+            print(talldata.sum())
+            self.value_totarea.setText(str(talldata.sum()))
 
 
 if __name__ == '__main__':
