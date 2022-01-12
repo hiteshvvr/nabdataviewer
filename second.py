@@ -61,7 +61,7 @@ class MyTabWidget(QWidget):
         # self.alayout.addWidget(self.l)
         # self.tab1.setLayout(self.tab1.layout)
         self.button_fname = QPushButton('Select File')
-        self.fname = "/Users/seeker/daq60hz/tdata/run-15982data-21"
+        self.fname = "/Users/seeker/picarddata/2022/01Jan/070122/run-16043data-21"
         self.button_fname.clicked.connect(self.dialog)
         self.field_fname = QLineEdit(self.fname)
         self.field_fname.textChanged.connect(self.updatefname)
@@ -143,7 +143,7 @@ class MyTabWidget(QWidget):
 #       INITIAL RANDOM DATA
         self.x = np.arange(100)
         self.y = np.random.random(100)
-        self.bins = 15
+        self.bins = 40
         self.hy,self.hx = np.histogram(self.y,bins=self.bins)
 
 #       PLOTS
@@ -180,6 +180,12 @@ class MyTabWidget(QWidget):
         self.pw4 = pg.PlotWidget(name="testplot")
         self.p4 = pg.ScatterPlotItem(size=2,brush=pg.mkBrush(0, 0, 0, 200))
         self.p4.addPoints(x = self.x, y = self.y)
+
+        self.p5 = self.pw4.plot()
+        #  fillLevel=0, fillOutline=True,brush=(100,0,0))
+        self.p5.setPen(color = (0,0,0), width = 2)
+        self.p5.setData(self.x, self.y)
+        
         self.pw4.addItem(self.p4)
         self.pw4.setLabel('left', 'Value', units='V')
         self.pw4.setLabel('bottom', 'Time', units='s')
@@ -290,7 +296,7 @@ class MyTabWidget(QWidget):
     def updatenoisehistogram(self):
         meandata = self.data.mean(axis=2)
         counts, edges =  np.histogram(meandata[:,self.chan],bins=self.bins)
-        self.hy,self.hx = counts,edges
+        self.hy, self.hx = counts, edges
         self.p2.setData(self.hx, self.hy)
 
     def updatefname(self):
@@ -308,16 +314,23 @@ class MyTabWidget(QWidget):
 
     def updatestackplot(self):
         self.getlims()
-        print(self.lims)
+        # print(self.lims)
         self.sy = self.data[self.lims[0]:self.lims[1],self.chan].flatten()
         self.sx = np.tile(np.arange(0,len(self.data[0,self.chan])),len(self.data[self.lims[0]:self.lims[1],self.chan]))
         self.sx = self.sx*self.tbinwidth
         self.p4.setData(x = self.sx, y = self.sy)
+        tmean = self.data[self.lims[0]:self.lims[1],self.chan].mean(axis=0)
+        self.my = tmean
+        self.mx = np.arange(0,len(self.data[0,self.chan]))
+        # print(self.my)
+        self.p5.setData(x = self.mx*self.tbinwidth, y = self.my)
 
     def getarea(self):
         if self.data is not None:
-            talldata = self.data[0:len(self.data)-1,self.chan].flatten()
-            print(talldata.sum())
+            # talldata = self.data[0:len(self.data)-1,self.chan].flatten()
+            talldata = self.data[:,self.chan].flatten()
+
+            # print(talldata.sum())
             self.value_totarea.setText(str(talldata.sum()))
 
 
