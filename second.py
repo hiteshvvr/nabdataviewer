@@ -8,6 +8,7 @@ from pyqtgraph import ImageView
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore
 import numpy as np
+import time 
 
 from selectdata import SelectDataTab
 
@@ -84,6 +85,7 @@ class MyTabWidget(QWidget):
 
         self.button_freerun = QPushButton('FreeRun')
         self.button_freerun.setCheckable(True)
+        self.button_freerun.clicked.connect(self.runfreerun)
         self.label_evtno = QLabel("Event")
         # self.label_evtno.setFixedWidth(60)
         self.value_evtno = QLineEdit(str(self.evtno))
@@ -193,8 +195,6 @@ class MyTabWidget(QWidget):
         # self.pw4.showGrid(x=True, y=True)
 
         self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.updatexy)
-        self.timer.start(500)
 
 
 
@@ -257,18 +257,13 @@ class MyTabWidget(QWidget):
         tdata = 20*tdata/(2**24)
         self.data = tdata
         self.updateall()
-        len(self.data)
         self.value_totevt.setText(str(len(self.data)))
         self.getarea()
-        # self.updatexy()
-        # self.updaterangeplot()
-        # self.updatenoisehistogram()
-        # self.updatestackplot()
         return(self.data)
 
     def updateall(self):
-        self.updatexy()
         if self.data is not None:
+            self.updatexy()
             self.updaterangeplot()
             self.updatenoisehistogram()
             self.updatestackplot()
@@ -285,10 +280,6 @@ class MyTabWidget(QWidget):
 
     def updaterangeplot(self):
         self.getlims()
-        # self.data,self.chan,self.lims
-        # fdata = self.data[self.lims[0],self.chan]
-        # for i in range(self.lims[0]+1, self.lims[1]):
-        #     fdata = np.append(fdata,self.data[i,self.chan])
         self.ry = self.data[self.lims[0]:self.lims[1],self.chan].flatten()
         self.rx = np.arange(len(self.ry))
         self.p3.setData(x=self.rx,y=self.ry)
@@ -333,6 +324,19 @@ class MyTabWidget(QWidget):
             # print(talldata.sum())
             self.value_totarea.setText(str(talldata.sum()))
 
+    def runfreerun(self):
+        if self.button_freerun.isChecked():
+            self.timer.timeout.connect(self.randxy)
+            self.timer.start(2000)
+        else:
+            self.timer.stop()
+
+    def randxy(self):
+        if self.data is not None:
+            datalen = len(self.data)
+            self.evtno = np.random.randint(datalen)
+            self.value_evtno.setText(str(self.evtno))
+            self.updatexy()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
