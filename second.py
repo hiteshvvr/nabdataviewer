@@ -271,13 +271,8 @@ class MyTabWidget(QWidget):
         # GET OFFSET
         self.field_fname.setStyleSheet("color: black;  background-color: white")
         offset = self.getoffset()
-        # tdata = np.fromfile(self.fname, dtype = np.uint32)
-        # for i in range(len(tdata)):
-        #     if(tdata[i] == self.evtsig):
-        #         offset = i
-        #         break
-        # if(i == len(tdata) - 1):
-        #     self.field_fname.setText("WARNING: This fil")
+        # print(offset)
+
 
         tdata = np.core.records.fromfile(self.fname, formats='(48)int32,(40,48)int32',names='header,data', offset=offset*4)
 
@@ -289,18 +284,7 @@ class MyTabWidget(QWidget):
         self.updateall()
         self.value_totevt.setText(str(len(self.data)))
         self.getarea()
-        return(self.data)
-
-    def getoset(self):
-        header_index = 0
-        data = np.fromfile(self.fname, dtype = np.uint32)
-        for i in range(len(data)):
-            if(data[i] == self.evtsig):
-                header_index = i
-                break
-        if(i == len(data) - 1):
-            header_index = 0
-        return(header_index)    
+        return(self.data) 
 
     def updateall(self):
         if self.data is not None:
