@@ -82,6 +82,7 @@ class MyTabWidget(QWidget):
         self.totevnt = 00
         self.totarea = 00
         self.tbinwidth = 320e-6
+        self.evtsig = 0xaa55f154
 
         self.button_freerun = QPushButton('FreeRun')
         self.button_freerun.setCheckable(True)
@@ -246,11 +247,40 @@ class MyTabWidget(QWidget):
         self.getevntno()
         self.updatexy()
 
+    def getoffset(self):
+        header_index = 0
+        data = np.fromfile(self.fname, dtype = np.uint32)
+        for i in range(0,len(data)):
+            if(data[i] == self.evtsig):
+                header_index = i
+                break
+        if(i == len(data) - 1):
+            header_index = 0
+            tfname = self.fname
+            self.field_fname.setText("WARNING: ThIs FiLe Do NoT CoNtAiN PrOpEr HeAdEr")
+            self.field_fname.setStyleSheet("color: black;  background-color: red")
+            self.fname = tfname
+        return(header_index)
+
+
+
     def loaddata(self):
         """
         Get the data in the form of array of 48x40 (2d array)(48 channel column, and 40 rows which are samples)
         """
-        tdata = np.core.records.fromfile(self.fname, formats='(48)int32,(40,48)int32',names='header,data')
+        # GET OFFSET
+        self.field_fname.setStyleSheet("color: black;  background-color: white")
+        offset = self.getoffset()
+        # tdata = np.fromfile(self.fname, dtype = np.uint32)
+        # for i in range(len(tdata)):
+        #     if(tdata[i] == self.evtsig):
+        #         offset = i
+        #         break
+        # if(i == len(tdata) - 1):
+        #     self.field_fname.setText("WARNING: This fil")
+
+        tdata = np.core.records.fromfile(self.fname, formats='(48)int32,(40,48)int32',names='header,data', offset=offset*4)
+
         tdata = tdata['data']
         tdata = tdata.transpose(0,2,1)
         tdata = tdata//(2**8)
@@ -260,6 +290,17 @@ class MyTabWidget(QWidget):
         self.value_totevt.setText(str(len(self.data)))
         self.getarea()
         return(self.data)
+
+    def getoset(self):
+        header_index = 0
+        data = np.fromfile(self.fname, dtype = np.uint32)
+        for i in range(len(data)):
+            if(data[i] == self.evtsig):
+                header_index = i
+                break
+        if(i == len(data) - 1):
+            header_index = 0
+        return(header_index)    
 
     def updateall(self):
         if self.data is not None:
