@@ -1,16 +1,16 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget
-from PyQt5.QtWidgets import QAction, QTabWidget, QVBoxLayout, QLabel, QHBoxLayout
+from PyQt5.QtWidgets import QTabWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtWidgets import QStyleFactory, QLineEdit, QFileDialog
-from PyQt5.QtWidgets import QComboBox, QSpacerItem
+from PyQt5.QtWidgets import QComboBox
 # from testtab import MyTabWidget
-from pyqtgraph import ImageView
+# from pyqtgraph import ImageView
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore
 import numpy as np
-import time 
+# import time
+# from selectdata import SelectDataTab
 
-from selectdata import SelectDataTab
 
 class App(QMainWindow):
     def __init__(self) -> None:
@@ -18,11 +18,8 @@ class App(QMainWindow):
         self.title = "Main Window"
         self.setWindowTitle(self.title)
         QApplication.setStyle(QStyleFactory.create('Fusion'))
-
-        
         self.tab_widget = MyTabWidget(self)
         self.setCentralWidget(self.tab_widget)
-
         self.show()
 
 
@@ -32,14 +29,13 @@ class MyTabWidget(QWidget):
         self.layout = QVBoxLayout(self)
         pg.setConfigOption('background', 'w')
 
-        # Initialize tab screen 
+        # Initialize tab screen
         self.tabs = QTabWidget()
         self.tab1 = QWidget()
         self.tab2 = QWidget()
         self.tab3 = QWidget()
         # self.loaddata = SelectDataTab()
         # self.loaddatatab = self.loaddata.gettab()
-
 
         # self.height = 30
         self.width = 100
@@ -51,7 +47,7 @@ class MyTabWidget(QWidget):
 
         # Create First Tab
         # self.tab1.layout = QVBoxLayout(self)
-        self.mainlayout= QVBoxLayout()
+        self.mainlayout = QVBoxLayout()
         self.inlayout = QHBoxLayout()
         self.in2layout = QHBoxLayout()
         self.r1layout = QHBoxLayout()
@@ -69,7 +65,7 @@ class MyTabWidget(QWidget):
         self.data = None
         self.button_load = QPushButton('LoadData')
         self.button_load.clicked.connect(self.loaddata)
-        
+
         self.label_channo = QLabel("Channel")
         self.label_channo.setFixedWidth(60)
         self.sel_channo = QComboBox()
@@ -78,7 +74,7 @@ class MyTabWidget(QWidget):
         self.chan = 0
 
         self.evtno = 42
-        self.lims = [2,10]
+        self.lims = [2, 10]
         self.totevnt = 00
         self.totarea = 00
         self.tbinwidth = 320e-6
@@ -99,10 +95,9 @@ class MyTabWidget(QWidget):
         # self.label_totarea.setFixedWidth(60)
         self.value_totarea = QLineEdit(str(self.totarea))
 
-
         self.value_evtno.textChanged.connect(self.updateevent)
-        self.label_lims= QLabel("Range")
-        self.value_lims= QLineEdit(str(self.lims)[1:-1])
+        self.label_lims = QLabel("Range")
+        self.value_lims = QLineEdit(str(self.lims)[1:-1])
         self.label_lims.setFixedWidth(60)
         self.value_lims.textChanged.connect(self.updatestackplot)
         # self.field_fname.setMaximumWidth(self.width)
@@ -112,7 +107,7 @@ class MyTabWidget(QWidget):
         self.inlayout.addWidget(self.field_fname)
         self.inlayout.addWidget(self.button_load)
         self.inlayout.addWidget(self.sel_channo)
-        
+
         self.in2layout.addWidget(self.button_freerun)
         self.in2layout.addWidget(self.label_evtno)
         self.in2layout.addWidget(self.value_evtno)
@@ -124,16 +119,11 @@ class MyTabWidget(QWidget):
         self.in2layout.addWidget(self.label_totarea)
         self.in2layout.addWidget(self.value_totarea)
 
-
-
-
-
-
         # self.gwin = pg.GraphicsWindow()
         # self.rplt = self.gwin.addPlot()
-        
+
         self.pen1 = pg.mkPen('r', width=2)
-        self.pen2 = pg.mkPen(color=(255, 15, 15),width=2)
+        self.pen2 = pg.mkPen(color=(255, 15, 15), width=2)
         # self.pen3 = pg.mkPen(color=(000, 155, 115), style=QtCore.Qt.DotLine)
         # self.curve = self.rplt.plot(pen=self.pen3)
         # self.curve2 = self.rplt.plot(pen=self.pen2)
@@ -147,48 +137,47 @@ class MyTabWidget(QWidget):
         self.x = np.arange(100)
         self.y = np.random.random(100)
         self.bins = 40
-        self.hy,self.hx = np.histogram(self.y,bins=self.bins)
+        self.hy, self.hx = np.histogram(self.y, bins=self.bins)
 
 #       PLOTS
 
         self.pw1 = pg.PlotWidget(name="testplot")
-        self.pen1 = pg.mkPen(color=(000, 0, 0), style=QtCore.Qt.DotLine,width=2)
+        self.pen1 = pg.mkPen(
+            color=(000, 0, 0), style=QtCore.Qt.DotLine, width=2)
         self.p1 = self.pw1.plot(pen=self.pen1)
         # self.p1.setPen(color = (0,0,0), width = 2)
         self.pw1.setLabel('left', 'Value', units='V')
         self.pw1.setLabel('bottom', 'Time', units='s')
-        self.p1.setData(x=self.x, y = self.y)
+        self.p1.setData(x=self.x, y=self.y)
         self.pw1.showGrid(x=True, y=True)
 
         self.pw2 = pg.PlotWidget(name="testplot")
 
         self.p2 = self.pw2.plot(stepMode="center")
         #  fillLevel=0, fillOutline=True,brush=(100,0,0))
-        self.p2.setPen(color = (0,0,0), width = 2)
+        self.p2.setPen(color=(0, 0, 0), width=2)
         self.pw2.setLabel('left', 'Counts', units='arb')
         self.pw2.setLabel('bottom', 'Volts', units='V')
         self.p2.setData(self.hx, self.hy)
         self.pw2.showGrid(x=True, y=True)
 
-        
         self.pw3 = pg.PlotWidget(name="testplot")
         self.p3 = self.pw3.plot()
-        self.p3.setPen(color = (0,0,0), width = 5)
+        self.p3.setPen(color=(0, 0, 0), width=5)
         self.pw3.setLabel('left', 'Value', units='V')
         self.pw3.setLabel('bottom', 'Time', units='s')
-        self.p3.setData(x=self.x, y = self.y)
+        self.p3.setData(x=self.x, y=self.y)
         self.pw3.showGrid(x=True, y=True)
 
-
         self.pw4 = pg.PlotWidget(name="testplot")
-        self.p4 = pg.ScatterPlotItem(size=2,brush=pg.mkBrush(0, 0, 0, 200))
-        self.p4.addPoints(x = self.x, y = self.y)
+        self.p4 = pg.ScatterPlotItem(size=2, brush=pg.mkBrush(0, 0, 0, 200))
+        self.p4.addPoints(x=self.x, y=self.y)
 
         self.p5 = self.pw4.plot()
         #  fillLevel=0, fillOutline=True,brush=(100,0,0))
-        self.p5.setPen(color = (0,0,0), width = 2)
+        self.p5.setPen(color=(0, 0, 0), width=2)
         self.p5.setData(self.x, self.y)
-        
+
         self.pw4.addItem(self.p4)
         self.pw4.setLabel('left', 'Value', units='V')
         self.pw4.setLabel('bottom', 'Time', units='s')
@@ -197,14 +186,10 @@ class MyTabWidget(QWidget):
 
         self.timer = QtCore.QTimer()
 
-
-
         self.r1layout.addWidget(self.pw1)
         self.r1layout.addWidget(self.pw2)
         self.r2layout.addWidget(self.pw3)
         self.r2layout.addWidget(self.pw4)
-
-
 
         # self.alayout.addWidget(self.setallVolt)
         # self.alayout.addWidget(self.gwin)
@@ -219,13 +204,14 @@ class MyTabWidget(QWidget):
         self.tab1.setLayout(self.mainlayout)
         # self.tab1.setLayout(self.alayout)
 
-        #Add tabs to Widget
+        # Add tabs to Widget
         self.layout.addWidget(self.tabs)
         self.setLayout(self.layout)
-    
+
     def dialog(self):
         # file , check = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*);;Python Files (*.py);;Text Files (*.txt)")
-        tempfile, self.check = QFileDialog.getOpenFileName(None, "SelectFile", "", "")
+        tempfile, self.check = QFileDialog.getOpenFileName(
+            None, "SelectFile", "", "")
         if self.check:
             self.fname = tempfile
             self.field_fname.setText(self.fname)
@@ -249,42 +235,44 @@ class MyTabWidget(QWidget):
 
     def getoffset(self):
         header_index = 0
-        data = np.fromfile(self.fname, dtype = np.uint32)
-        for i in range(0,len(data)):
+        data = np.fromfile(self.fname, dtype=np.uint32)
+        for i in range(0, len(data)):
             if(data[i] == self.evtsig):
                 header_index = i
                 break
         if(i == len(data) - 1):
             header_index = 0
             tfname = self.fname
-            self.field_fname.setText("WARNING: ThIs FiLe Do NoT CoNtAiN PrOpEr HeAdEr")
-            self.field_fname.setStyleSheet("color: black;  background-color: red")
+            self.field_fname.setText(
+                "WARNING: ThIs FiLe Do NoT CoNtAiN PrOpEr HeAdEr")
+            self.field_fname.setStyleSheet(
+                "color: black;  background-color: red")
             self.fname = tfname
         return(header_index)
-
-
 
     def loaddata(self):
         """
         Get the data in the form of array of 48x40 (2d array)(48 channel column, and 40 rows which are samples)
         """
         # GET OFFSET
-        self.field_fname.setStyleSheet("color: black;  background-color: white")
+        self.field_fname.setStyleSheet(
+            "color: black;  background-color: white")
         offset = self.getoffset()
-        # print(offset)
+        # offset = 0
+        print(offset)
 
-
-        tdata = np.core.records.fromfile(self.fname, formats='(48)int32,(40,48)int32',names='header,data', offset=offset*4)
+        tdata = np.core.records.fromfile(
+            self.fname, formats='(48)int32,(40,48)int32', names='header,data', offset=offset * 4)
 
         tdata = tdata['data']
-        tdata = tdata.transpose(0,2,1)
-        tdata = tdata//(2**8)
-        tdata = 20*tdata/(2**24)
+        tdata = tdata.transpose(0, 2, 1)
+        tdata = tdata // (2**8)
+        tdata = 20 * tdata / (2**24)
         self.data = tdata
         self.updateall()
         self.value_totevt.setText(str(len(self.data)))
         self.getarea()
-        return(self.data) 
+        return(self.data)
 
     def updateall(self):
         if self.data is not None:
@@ -293,25 +281,25 @@ class MyTabWidget(QWidget):
             self.updatenoisehistogram()
             self.updatestackplot()
 
-
     def updatexy(self):
         if self.data is not None:
             tevtdata = self.data[self.evtno]
             tchndata = tevtdata[self.chan]
             self.x = np.arange(len(tchndata))
-            self.x = self.x*self.tbinwidth
+            self.x = self.x * self.tbinwidth
             self.y = tchndata
-            self.p1.setData(x=self.x, y = self.y)
+            self.p1.setData(x=self.x, y=self.y)
 
     def updaterangeplot(self):
         self.getlims()
-        self.ry = self.data[self.lims[0]:self.lims[1],self.chan].flatten()
+        # self.ry = self.data[self.lims[0]:self.lims[1],self.chan].flatten()
+        self.ry = self.data[0:20, self.chan].flatten()
         self.rx = np.arange(len(self.ry))
-        self.p3.setData(x=self.rx,y=self.ry)
+        self.p3.setData(x=self.rx, y=self.ry)
 
     def updatenoisehistogram(self):
         meandata = self.data.mean(axis=2)
-        counts, edges =  np.histogram(meandata[:,self.chan],bins=self.bins)
+        counts, edges = np.histogram(meandata[:, self.chan], bins=self.bins)
         self.hy, self.hx = counts, edges
         self.p2.setData(self.hx, self.hy)
 
@@ -323,7 +311,7 @@ class MyTabWidget(QWidget):
         if(len(templims) == 2):
             self.lims = [int(float(i)) for i in templims]
             if(self.lims[1] > len(self.data)):
-                self.lims[1] = len(self.data)-2
+                self.lims[1] = len(self.data) - 2
         if(len(self.lims) == 2):
             self.evtno = self.lims[0]
             self.updatexy()
@@ -331,20 +319,21 @@ class MyTabWidget(QWidget):
     def updatestackplot(self):
         self.getlims()
         # print(self.lims)
-        self.sy = self.data[self.lims[0]:self.lims[1],self.chan].flatten()
-        self.sx = np.tile(np.arange(0,len(self.data[0,self.chan])),len(self.data[self.lims[0]:self.lims[1],self.chan]))
-        self.sx = self.sx*self.tbinwidth
-        self.p4.setData(x = self.sx, y = self.sy)
-        tmean = self.data[self.lims[0]:self.lims[1],self.chan].mean(axis=0)
+        self.sy = self.data[self.lims[0]:self.lims[1], self.chan].flatten()
+        self.sx = np.tile(np.arange(0, len(self.data[0, self.chan])), len(
+            self.data[self.lims[0]:self.lims[1], self.chan]))
+        self.sx = self.sx * self.tbinwidth
+        self.p4.setData(x=self.sx, y=self.sy)
+        tmean = self.data[self.lims[0]:self.lims[1], self.chan].mean(axis=0)
         self.my = tmean
-        self.mx = np.arange(0,len(self.data[0,self.chan]))
+        self.mx = np.arange(0, len(self.data[0, self.chan]))
         # print(self.my)
-        self.p5.setData(x = self.mx*self.tbinwidth, y = self.my)
+        self.p5.setData(x=self.mx * self.tbinwidth, y=self.my)
 
     def getarea(self):
         if self.data is not None:
             # talldata = self.data[0:len(self.data)-1,self.chan].flatten()
-            talldata = self.data[:,self.chan].flatten()
+            talldata = self.data[:, self.chan].flatten()
 
             # print(talldata.sum())
             self.value_totarea.setText(str(talldata.sum()))
@@ -363,12 +352,10 @@ class MyTabWidget(QWidget):
             self.value_evtno.setText(str(self.evtno))
             self.updatexy()
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = App()
     # tab_widget = MyTabWidget(ex)
     # ex.setCentralWidget(tab_widget)
     sys.exit(app.exec_())
-
-    
-

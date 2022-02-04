@@ -1,0 +1,282 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"inl",
+				"in2layout"
+			],
+			[
+				"setC",
+				"setCheckable"
+			],
+			[
+				"upda",
+				"updatestackplot"
+			],
+			[
+				"add",
+				"addWidget"
+			],
+			[
+				"Sca",
+				"ScatterPlotItem"
+			],
+			[
+				"curren",
+				"currentText"
+			],
+			[
+				"cha",
+				"sel_channo"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"anaconda",
+				"Anaconda: Set Python interpreter"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"cond",
+				"Conda: Activate Environment"
+			],
+			[
+				"conda",
+				"Conda: Activate Environment"
+			],
+			[
+				":w",
+				":w - Save"
+			],
+			[
+				"condacti",
+				"Conda: Activate Environment"
+			],
+			[
+				"them",
+				"UI: Select Theme"
+			],
+			[
+				"color",
+				"UI: Select Color Scheme"
+			],
+			[
+				"insall",
+				"Package Control: Install Package"
+			],
+			[
+				"remov",
+				"Package Control: Remove Package"
+			],
+			[
+				"theme",
+				"UI: Select Theme"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 148.0,
+		"history":
+		[
+			"exit()",
+			"exit",
+			"ls"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/seeker/TNwork/daq60hz/nabdataviewer"
+	],
+	"file_history":
+	[
+		"/Users/seeker/TNwork/daq60hz/nabdataviewer/second.py",
+		"/Users/seeker/daq60hz/acq400_hapi/acq400_hapi/acq400_ui.py",
+		"/Users/seeker/daq60hz/acq400_hapi/acq400_hapi/cleanup.py",
+		"/Users/seeker/daq60hz/acq400_hapi/combo_apps/transientCaptureWithAWG.py",
+		"/Users/seeker/daq60hz/acq400_hapi/package/setup.py",
+		"/Users/seeker/Desktop/eyeprescription.txt",
+		"/Users/seeker/Desktop/israelpost.txt",
+		"/Users/seeker/daq60hz/Xpow8ch/xpowlib.py",
+		"/Users/seeker/daq60hz/Xpow8ch/singlechlayout.py",
+		"/Users/seeker/daq60hz/Xpow8ch/fulllayout.py",
+		"/Users/seeker/Pictures/libNPDG/rootlogon.C",
+		"/Users/seeker/Library/Application Support/Sublime Text/Packages/User/Package Control.sublime-settings",
+		"/Users/seeker/.ssh/id_rsa.pub"
+	],
+	"find":
+	{
+		"height": 54.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 31.0
+	},
+	"input":
+	{
+		"height": 53.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 144.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"output.stino_build_panel":
+	{
+		"height": 0.0
+	},
+	"output.stino_panel":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/Conda/Conda.sublime-build",
+	"project": "nabdataviewer.sublime-project",
+	"replace":
+	{
+		"height": 94.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 415.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
