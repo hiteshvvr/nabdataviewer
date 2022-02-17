@@ -1,7 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication, QStyleFactory
-from mainframe import MyTabWidget
-from mdata import MData
+from mainframe import MainFrame
 
 
 class App(QMainWindow):
@@ -9,9 +8,8 @@ class App(QMainWindow):
         super().__init__()
         self.title = "nab 60 Hz DaTa Viewer"
         self.setWindowTitle(self.title)
-        data = MData()
         QApplication.setStyle(QStyleFactory.create('Fusion'))
-        self.tab_widget = MyTabWidget(self, data)
+        self.tab_widget = MainFrame(self)
         self.setCentralWidget(self.tab_widget)
         self.show()
 

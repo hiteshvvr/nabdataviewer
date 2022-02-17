@@ -1,18 +1,19 @@
 from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 import pyqtgraph as pg
 from mainwindow import MainWindow
+from mdata import MData
 
 
 
-class MyTabWidget(QWidget):
-    def __init__(self, parent,data) -> None:
+class MainFrame(QWidget):
+    def __init__(self, parent) -> None:
         super(QWidget, self).__init__(parent)
         self.layout = QVBoxLayout(self)
         pg.setConfigOption('background', 'w')
-        self.data = data
 
         self.tabs = QTabWidget()
-        self.tab1 = MainWindow()
+        self.data = MData()
+        self.tab1 = MainWindow(self.data)
 
         self.tabs.addTab(self.tab1, "Main Window")
 
