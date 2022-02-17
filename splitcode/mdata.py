@@ -1,8 +1,8 @@
 import numpy as np
 
 class MData():
-    def __init__(self, parent) -> None:
-        super(self).__init__(parent)
+    def __init__(self) -> None:
+        # super(self).__init__(parent)
         self.fname = None
         self.eventsig = None
 

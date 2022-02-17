@@ -5,19 +5,16 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore
 import numpy as np
 
-class Monitor1Tab(QWidget):
+
+class MainWindow(QWidget):
+    # def __init__(self, parent) -> None:
     def __init__(self):
-        # super(QWidget, self).__init__(parent)
+        super(QWidget, self).__init__()
         self.layout = QVBoxLayout(self)
         pg.setConfigOption('background', 'w')
 
-        # Initialize tab screen
-        self.tabs = QTabWidget()
-        self.tab1 = QWidget()
-        self.tab2 = QWidget()
-        self.tab3 = QWidget()
-        # self.loaddata = SelectDataTab()
-        # self.loaddatatab = self.loaddata.gettab()
+        # Initialize Tab
+        self.maintab = QWidget()
 
         # self.height
         self.width = 100
@@ -30,7 +27,7 @@ class Monitor1Tab(QWidget):
         self.r1layout = QHBoxLayout()
         self.r2layout = QHBoxLayout()
         self.button_fname = QPushButton('Select File')
-        self.fname = "/Users/seeker/picarddata/2022/01Jan/070122/run-16043data-21"
+        self.fname = "/Users/seeker/TNwork/picarddata/2022/01Jan/070122/run-16043data-21"
         self.button_fname.clicked.connect(self.dialog)
         self.field_fname = QLineEdit(self.fname)
         self.field_fname.textChanged.connect(self.updatefname)
@@ -173,11 +170,11 @@ class Monitor1Tab(QWidget):
         # self.alayout.addWidget(self.pw1)
         # self.alayout.addWidget(self.pw2)
 
-        self.tab2.setLayout(self.mainlayout)
+        self.maintab.setLayout(self.mainlayout)
         # self.tab1.setLayout(self.alayout)
 
         # Add tabs to Widget
-        self.layout.addWidget(self.tab2)
+        self.layout.addWidget(self.maintab)
         self.setLayout(self.layout)
 
     def dialog(self):
@@ -323,4 +320,3 @@ class Monitor1Tab(QWidget):
             self.evtno = np.random.randint(datalen)
             self.value_evtno.setText(str(self.evtno))
             self.updatexy()
-
