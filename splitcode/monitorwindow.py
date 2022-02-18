@@ -6,7 +6,7 @@ from pyqtgraph.Qt import QtCore
 import numpy as np
 
 
-class MainWindow(QWidget):
+class Monitor(QWidget):
     # def __init__(self, parent) -> None:
     def __init__(self,data):
         super(QWidget, self).__init__()
@@ -28,14 +28,14 @@ class MainWindow(QWidget):
         self.in2layout = QHBoxLayout()
         self.r1layout = QHBoxLayout()
         self.r2layout = QHBoxLayout()
-        self.button_fname = QPushButton('Select File')
-        self.fname = "/Users/seeker/TNwork/picarddata/2022/01Jan/070122/run-16043data-21"
-        self.button_fname.clicked.connect(self.dialog)
-        self.field_fname = QLineEdit(self.fname)
-        self.field_fname.textChanged.connect(self.updatefname)
-        self.data.fname = self.fname
-        self.button_load = QPushButton('LoadData')
-        self.button_load.clicked.connect(self.loaddata)
+        # self.button_fname = QPushButton('Select File')
+        # self.fname = "/Users/seeker/TNwork/picarddata/2022/01Jan/070122/run-16043data-21"
+        # self.button_fname.clicked.connect(self.dialog)
+        # self.field_fname = QLineEdit(self.fname)
+        # self.field_fname.textChanged.connect(self.updatefname)
+        # self.data.fname = self.fname
+        # self.button_load = QPushButton('LoadData')
+        # self.button_load.clicked.connect(self.loaddata)
 
         self.label_channo = QLabel("Channel")
         self.label_channo.setFixedWidth(60)
@@ -46,8 +46,8 @@ class MainWindow(QWidget):
 
         self.evtno = 42
         self.lims = [2, 10]
-        self.totevnt = 0
-        self.totarea = 0
+        self.totevnt = 00
+        self.totarea = 00
         self.tbinwidth = 320e-6
         self.evtsig = 0xaa55f154
 
@@ -78,11 +78,12 @@ class MainWindow(QWidget):
         # self.field_fname.setMaximumWidth(self.width)
         # self.space = QSpacerItem(10,5)
 
-        self.inlayout.addWidget(self.button_fname)
-        self.inlayout.addWidget(self.field_fname)
-        self.inlayout.addWidget(self.button_load)
-        self.inlayout.addWidget(self.sel_channo)
+        # self.inlayout.addWidget(self.button_fname)
+        # self.inlayout.addWidget(self.field_fname)
+        # self.inlayout.addWidget(self.button_load)
 
+        self.in2layout.addWidget(self.label_channo)
+        self.in2layout.addWidget(self.sel_channo)
         self.in2layout.addWidget(self.button_freerun)
         self.in2layout.addWidget(self.button_nextevt)
         self.in2layout.addWidget(self.label_evtno)
@@ -171,7 +172,7 @@ class MainWindow(QWidget):
         # self.alayout.addWidget(self.setallVolt)
         # self.alayout.addWidget(self.gwin)
         # self.alayout.addLayout(self.inlayout)
-        self.mainlayout.addLayout(self.inlayout)
+        # self.mainlayout.addLayout(self.inlayout)
         self.mainlayout.addLayout(self.in2layout)
         self.mainlayout.addLayout(self.r1layout)
         self.mainlayout.addLayout(self.r2layout)

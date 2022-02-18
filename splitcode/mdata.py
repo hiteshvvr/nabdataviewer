@@ -28,9 +28,9 @@ class MData():
         Get the data in the form of array of 48x40 (2d array)(48 channel column, and 40 rows which are samples)
         """
         # GET OFFSET
-        print("File: ", self.fname)
+        # print("File: ", self.fname)
         self.offset = self.getoffset()
-        print("Header Offset: ", self.offset)
+        # print("Header Offset: ", self.offset)
         if self.offset < 0:
             self.headerinfo = 0
             offset = 0
