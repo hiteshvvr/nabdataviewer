@@ -1,3 +1,5 @@
+from turtle import shape
+from matplotlib.pyplot import axis
 import numpy as np
 
 class MData():
@@ -91,6 +93,18 @@ class MData():
             tmeandata = self.mdata[llim:hlim,chan].mean(axis=0)
             xdata = np.arange(0,len(tmeandata)) * self.timebinwidth
             return(xdata,tmeandata)
+
+    def applyvcut(self, vcutval):
+        if self.mdata is not None:
+            pass
+            # print(self.mdata.shape)
+            # # self.mdata = self.mdata[self.mdata<vcutval]
+            # tindx = np.any(np.any(self.mdata<vcutval, axis = 2), axis = 1)
+            # self.mdata = self.mdata[~tindx]
+            # # print("indexshape", tindx.shape)
+            # print(~tindx[:20])
+            # # self.mdata = np.where(self.mdata < vcutval, self.mdata, self.mdata)
+            # print(self.mdata.shape)
 
 
 

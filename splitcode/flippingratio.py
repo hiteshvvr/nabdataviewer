@@ -24,12 +24,16 @@ class Flipper(QWidget):
 
         # self.height
         self.width = 100
-        self.lims = [2, 100]
+        self.lims = [2, 1000]
+        self.pedvcut = 0
+        self.nhevcut = 0
+        self.yhevcut = 0
+        self.fliprat = None
+        self.flipratmean = 0.00
         # self.totevnt = 0
         # self.totarea = 0
         # self.tbinwidth = 320e-6
         self.evtsig = 0xaa55f154
-
 
         # Create First Tab
         # self.tab1.layout = QVBoxLayout(self)
@@ -53,14 +57,19 @@ class Flipper(QWidget):
         self.field_yhefname = QLineEdit(self.nhefname)
         self.field_nhefname = QLineEdit(self.yhefname)
 
-        self.button_pedfname.clicked.connect(lambda: self.dialog(self.pedfname, self.field_pedfname))
-        self.button_nhefname.clicked.connect(lambda: self.dialog(self.nhefname, self.field_nhefname))
-        self.button_yhefname.clicked.connect(lambda: self.dialog(self.yhefname, self.field_yhefname))
+        self.button_pedfname.clicked.connect(
+            lambda: self.dialog(self.pedfname, self.field_pedfname))
+        self.button_nhefname.clicked.connect(
+            lambda: self.dialog(self.nhefname, self.field_nhefname))
+        self.button_yhefname.clicked.connect(
+            lambda: self.dialog(self.yhefname, self.field_yhefname))
 
-
-        self.field_pedfname.textChanged.connect(lambda: self.updatefname("ped"))
-        self.field_nhefname.textChanged.connect(lambda: self.updatefname("nhe"))
-        self.field_yhefname.textChanged.connect(lambda: self.updatefname("yhe"))
+        self.field_pedfname.textChanged.connect(
+            lambda: self.updatefname("ped"))
+        self.field_nhefname.textChanged.connect(
+            lambda: self.updatefname("nhe"))
+        self.field_yhefname.textChanged.connect(
+            lambda: self.updatefname("yhe"))
 
         self.label_pedchanno = QLabel("Ped Channel")
         self.label_nhechanno = QLabel("No He Channel")
@@ -78,9 +87,12 @@ class Flipper(QWidget):
         self.button_nheload = QPushButton('LoadData')
         self.button_yheload = QPushButton('LoadData')
 
-        self.button_pedload.clicked.connect(lambda: self.loaddata(self.field_pedfname, self.pedfname, self.ped, self.p1, self.p1m, self.pedchan))
-        self.button_nheload.clicked.connect(lambda: self.loaddata(self.field_nhefname, self.nhefname, self.nhe, self.p2, self.p2m, self.nhechan))
-        self.button_yheload.clicked.connect(lambda: self.loaddata(self.field_yhefname, self.yhefname, self.yhe, self.p3, self.p3m, self.yhechan))
+        self.button_pedload.clicked.connect(lambda: self.loaddata(
+            self.field_pedfname, self.pedfname, self.ped, self.p1, self.p1m, self.pedchan))
+        self.button_nheload.clicked.connect(lambda: self.loaddata(
+            self.field_nhefname, self.nhefname, self.nhe, self.p2, self.p2m, self.nhechan))
+        self.button_yheload.clicked.connect(lambda: self.loaddata(
+            self.field_yhefname, self.yhefname, self.yhe, self.p3, self.p3m, self.yhechan))
 
         self.sel_pedchanno = QComboBox()
         self.sel_nhechanno = QComboBox()
@@ -94,16 +106,46 @@ class Flipper(QWidget):
         self.sel_nhechanno.currentIndexChanged.connect(self.selectchannel)
         self.sel_yhechanno.currentIndexChanged.connect(self.selectchannel)
 
-
         self.label_lims = QLabel("Range")
-        self.value_lims = QLineEdit(str(self.lims)[1:-1])
         self.label_lims.setFixedWidth(60)
-        self.value_lims.textChanged.connect(self.updateallstackplot)
+        self.label_pedvcut = QLabel("pedVCut")
+        self.label_pedvcut.setFixedWidth(60)
+        self.label_nhevcut = QLabel("nheVCut")
+        self.label_nhevcut.setFixedWidth(60)
+        self.label_yhevcut = QLabel("vheVCut")
+        self.label_yhevcut.setFixedWidth(60)
+
+        self.value_lims = QLineEdit(str(self.lims)[1:-1])
         self.value_lims.setFixedWidth(60)
+        self.value_lims.textChanged.connect(self.updateallstackplot)
+        self.value_pedvcut = QLineEdit(str(self.pedvcut))
+        self.value_pedvcut.setFixedWidth(60)
+        self.value_pedvcut.textChanged.connect(
+            lambda: self.updatevcuts(self.value_pedvcut, self.ped))
+        self.value_nhevcut = QLineEdit(str(self.nhevcut))
+        self.value_nhevcut.setFixedWidth(60)
+        self.value_nhevcut.textChanged.connect(
+            lambda: self.updatevcuts(self.value_nhevcut, self.nhe))
+        self.value_yhevcut = QLineEdit(str(self.yhevcut))
+        self.value_yhevcut.setFixedWidth(60)
+        self.value_yhevcut.textChanged.connect(
+            lambda: self.updatevcuts(self.value_yhevcut, self.yhe))
 
         self.pedchan = 1
         self.nhechan = 1
         self.yhechan = 1
+
+        self.fliprat = 0.0
+
+        self.label_fliprat = QLabel("FlippingRatio")
+        # self.label_fliprat.setFixedWidth(60)
+        self.value_fliprat = QLineEdit(str(self.fliprat))
+        # self.value_fliprat.setFixedWidth(60)
+        self.button_fliprat= QPushButton('GetFlipRat')
+        self.button_fliprat.clicked.connect(self.flippingratio)
+        # self.label_space= QLabel(" ")
+ 
+
         # self.button_freerun = QPushButton('FreeRun')
         # self.button_freerun.setCheckable(True)
         # self.button_freerun.clicked.connect(self.runfreerun)
@@ -131,7 +173,6 @@ class Flipper(QWidget):
         # self.field_fname.setMaximumWidth(self.width)
         # self.space = QSpacerItem(10,5)
 
-        
         self.pedlayout.addWidget(self.button_pedfname)
         self.pedlayout.addWidget(self.field_pedfname)
         self.pedlayout.addWidget(self.button_pedload)
@@ -152,6 +193,16 @@ class Flipper(QWidget):
 
         self.r0layout.addWidget(self.label_lims)
         self.r0layout.addWidget(self.value_lims)
+        self.r0layout.addWidget(self.label_pedvcut)
+        self.r0layout.addWidget(self.value_pedvcut)
+        self.r0layout.addWidget(self.label_nhevcut)
+        self.r0layout.addWidget(self.value_nhevcut)
+        self.r0layout.addWidget(self.label_yhevcut)
+        self.r0layout.addWidget(self.value_yhevcut)
+        self.r0layout.addWidget(self.label_fliprat)
+        self.r0layout.addWidget(self.value_fliprat)
+        self.r0layout.addWidget(self.button_fliprat)
+        # self.r0layout.addWidget(self.label_space)
 
         self.pen1 = pg.mkPen('r', width=2)
         self.pen2 = pg.mkPen(color=(255, 15, 15), width=2)
@@ -175,11 +226,11 @@ class Flipper(QWidget):
         self.pw1 = pg.PlotWidget(title="Pedestal Run")
         self.p1 = pg.ScatterPlotItem(size=2, brush=pg.mkBrush(0, 0, 0, 200))
         self.p1.addPoints(x=self.x, y=self.y)
-       
+
         self.p1m = self.pw1.plot()
         self.p1m.setPen(color=(0, 0, 0), width=2)
         self.p1m.setData(x=self.x, y=self.y)
-        
+
         self.pw1.addItem(self.p1)
         self.pw1.setLabel('left', 'Value', units='V')
         self.pw1.setLabel('bottom', 'Time', units='s')
@@ -189,12 +240,11 @@ class Flipper(QWidget):
         self.pw2 = pg.PlotWidget(title="Run Without Helium Cell")
         self.p2 = pg.ScatterPlotItem(size=2, brush=pg.mkBrush(0, 0, 0, 200))
         self.p2.addPoints(x=self.x, y=self.y)
-       
+
         self.p2m = self.pw2.plot()
         self.p2m.setPen(color=(0, 0, 0), width=2)
         self.p2m.setData(x=self.x, y=self.y)
-        
-        
+
         self.pw2.addItem(self.p2)
         self.pw2.setLabel('left', 'Value', units='V')
         self.pw2.setLabel('bottom', 'Time', units='s')
@@ -204,11 +254,11 @@ class Flipper(QWidget):
         self.pw3 = pg.PlotWidget(title="Run With Helium Cell")
         self.p3 = pg.ScatterPlotItem(size=2, brush=pg.mkBrush(0, 0, 0, 200))
         self.p3.addPoints(x=self.x, y=self.y)
-       
+
         self.p3m = self.pw3.plot()
         self.p3m.setPen(color=(0, 0, 0), width=2)
         self.p3m.setData(x=self.x, y=self.y)
-        
+
         self.pw3.addItem(self.p3)
         self.pw3.setLabel('left', 'Value', units='V')
         self.pw3.setLabel('bottom', 'Time', units='s')
@@ -216,15 +266,16 @@ class Flipper(QWidget):
 
 #   Blank
         self.pw4 = pg.PlotWidget(title="Left Blank")
+        self.p4 = pg.ScatterPlotItem(size=2, brush=pg.mkBrush(0, 0, 0, 200))
 
-        self.p4 = self.pw4.plot(stepMode="center")
+        # self.p4 = self.pw4.plot(stepMode="center")
         #  fillLevel=0, fillOutline=True,brush=(100,0,0))
-        self.p4.setPen(color=(0, 0, 0), width=2)
-        self.pw4.setLabel('left', 'Counts', units='arb')
-        self.pw4.setLabel('bottom', 'Volts', units='V')
-        self.p4.setData(self.hx, self.hy)
+        # self.p4.setPen(color=(0, 0, 0), width=2)
+        self.pw4.addItem(self.p4)
+        self.pw4.setLabel('left', 'FlipRat', units='arb')
+        self.pw4.setLabel('bottom', 'Time', units='s')
+        self.p4.setData(self.x, self.y)
         self.pw4.showGrid(x=True, y=True)
-
 
         self.timer = QtCore.QTimer()
 
@@ -249,7 +300,7 @@ class Flipper(QWidget):
         self.layout.addWidget(self.maintab)
         self.setLayout(self.layout)
 
-    def dialog(self,fname,fnamefield):
+    def dialog(self, fname, fnamefield):
         # file , check = QFileDialog.getOpenFileName(None, "QFileDialog.getOpenFileName()", "", "All Files (*);;Python Files (*.py);;Text Files (*.txt)")
         tempfile, check = QFileDialog.getOpenFileName(
             None, "SelectFile", "", "")
@@ -276,14 +327,14 @@ class Flipper(QWidget):
         self.getevntno()
         self.updatexy()
 
-    def loaddata(self, fnamefield, fname, data, pl, plm,chan):
+    def loaddata(self, fnamefield, fname, data, pl, plm, chan):
         """
         Get the data in the form of array of 48x40 (2d array)(48 channel column, and 40 rows which are samples)
         """
         # GET OFFSET
         fnamefield.setStyleSheet(
             "color: black;  background-color: white")
-        # print(fname)
+        print(fname)
         data.fname = fname
         tfname = fname
         if(data.getdatafromfile() == 0):
@@ -296,7 +347,7 @@ class Flipper(QWidget):
         # self.value_totevt.setText(str((self.data.totalevents)))
         # self.value_totarea.setText(str(self.data.getarea(self.chan)))
 
-        self.updatestackplot(data,pl,plm,chan)
+        self.updatestackplot(data, pl, plm, chan)
         del data
         del fname
         # return(data)
@@ -313,7 +364,7 @@ class Flipper(QWidget):
     def updaterangeplot(self):
         self.getlims()
         self.lims[0] = 0
-        self.lims[1] = 20
+        self.lims[1] = 2000
         x, y = self.data.getrangedata(self.lims[0], self.lims[1], self.chan)
         self.p3.setData(x=x, y=y)
 
@@ -321,7 +372,7 @@ class Flipper(QWidget):
         hx, hy = self.data.gethistdistribution(self.chan)
         self.p2.setData(hx, hy)
 
-    def updatefname(self,runtype):
+    def updatefname(self, runtype):
         if runtype == "ped":
             self.pedfname = self.field_pedfname.text()
         if runtype == "nhe":
@@ -329,16 +380,16 @@ class Flipper(QWidget):
         if runtype == "yhe":
             self.yhefname = self.field_yhefname.text()
 
-    def getlims(self,data):
+    def getlims(self, data):
         templims = self.value_lims.text().split(sep=",")
         if(len(templims) == 2):
             self.lims = [int(float(i)) for i in templims]
             if(self.lims[1] > data.totalevents):
                 self.lims[1] = data.totalevents - 2
 
-    def updatestackplot(self,data,pl,plm,chan):
+    def updatestackplot(self, data, pl, plm, chan):
         self.getlims(data)
-        # self.lims=[10,100]
+        self.lims = [10, 100]
         sx, sy = data.getstackdata(self.lims[0], self.lims[1], chan)
         mx, my = data.gettimemean(self.lims[0], self.lims[1], chan)
         pl.setData(x=sx, y=sy)
@@ -348,7 +399,7 @@ class Flipper(QWidget):
         self.updatestackplot(self.ped, self.p1, self.p1m, self.pedchan)
         self.updatestackplot(self.nhe, self.p2, self.p2m, self.nhechan)
         self.updatestackplot(self.yhe, self.p3, self.p3m, self.yhechan)
-    
+
     def getarea(self):
         if self.data is not None:
             # talldata = self.data[0:len(self.data)-1,self.chan].flatten()
@@ -375,3 +426,19 @@ class Flipper(QWidget):
         self.evtno = self.evtno + 1
         self.value_evtno.setText(str(self.evtno))
         self.updatexy()
+
+    def updatevcuts(self, vcutfield, data):
+        tvcut = vcutfield.text().split(sep=",")
+        tvcut = int(float(tvcut[0]))
+        data.applyvcut(tvcut)
+        self.updateallstackplot()
+
+    def flippingratio(self):
+        self.tx,pedtminy = self.ped.gettimemean(chan=self.pedchan)
+        self.tx,nhetminy = self.nhe.gettimemean(chan=self.nhechan)
+        self.tx,yhetminy = self.yhe.gettimemean(chan=self.yhechan)
+
+        self.fliprat = (yhetminy-pedtminy) / (nhetminy-pedtminy)
+        self.p4.setData(self.tx, self.fliprat)
+        self.flipratmean = self.fliprat.mean()
+        self.value_fliprat.setText(str(self.flipratmean))
